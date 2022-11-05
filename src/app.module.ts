@@ -5,6 +5,13 @@ import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize'
 import { ConfigModule } from '@nestjs/config'
 import { User } from './user/user.model';
+import { AuthModule } from './auth/auth.module';
+import { UserService } from './user/user.service';
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
+import { UserController } from './user/user.controller';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 @Module({
   imports: [
@@ -21,9 +28,11 @@ import { User } from './user/user.model';
       autoLoadModels: true,
       models: [User],
     }),
-    UserModule
+    AuthModule,
+    UserModule,
+    SequelizeModule.forFeature([User]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, UserController],
+  providers: [AppService, AuthService, JwtService, UserService, ],
 })
 export class AppModule {}

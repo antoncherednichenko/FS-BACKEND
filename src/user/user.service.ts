@@ -1,37 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ServerError, SuccessObj } from 'src/utils';
+import { descryptHash, hashPassword } from '../utils';
 import { CreateUserDto } from './user.dto';
 import { User } from './user.model';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User) private UserRepository: typeof User){}
+    constructor(
+        @InjectModel(User) private UserRepository: typeof User
+    ){}
 
     async createUser(dto: CreateUserDto) {
-        const isUnique = await this.getAllUsers()
-            .then(users => {
-                if(users?.length) {
-                    return !users.some(user => user.email === dto.email)
-                }
-            })
-        
-        if (!isUnique) {
-            return new ServerError(1, 'Пользователь с таким email уже существует')
-        }
-
-        const user =  await this.UserRepository.create(dto)
-        return new SuccessObj({
-            auth: true,
-            email: user.email,
-            isBanned: user.isBanned,
-            id: user.id,
-            role: user.role
+        const user =  await this.UserRepository.create({
+            ...dto,
+            password: hashPassword(dto.password)
         })
+        return user
+    }
+
+   
+
+    async login(user: any) {
     }
 
     async getAllUsers() {
         const users = await this.UserRepository.findAll()
         return users
+    }
+
+    async findByEmail(email: string) {
+        const users = await this.getAllUsers()
+        return users.find(user => user.email === email )
+    }
+
+    async checkUser(dto: CreateUserDto) {
+        const user = await this.findByEmail(dto.email)
+        if (user) {
+            const isPasswordCorrect = descryptHash(dto.password, user.password)
+            return isPasswordCorrect ? this.login(user) : null
+        }
+        return null
     }
 }
