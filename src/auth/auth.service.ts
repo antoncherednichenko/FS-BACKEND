@@ -4,6 +4,7 @@ import { descryptHash } from 'src/utils';
 import { JwtService } from '@nestjs/jwt';
 
 import * as dotenv from 'dotenv'
+import { emailReg } from 'src/constants';
 dotenv.config()
 
 @Injectable()
@@ -12,6 +13,13 @@ export class AuthService {
         private UserService: UserService,
         private JwtService: JwtService
     ) {}
+    
+    emailValidation(email: string): boolean {
+        if (String(email).toLowerCase().match(emailReg)) {
+            return true
+        }
+        return false
+    }
 
     async userValidate(email: string, password: string) {
         const user = await this.UserService.findByEmail(email)

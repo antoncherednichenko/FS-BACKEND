@@ -18,11 +18,6 @@ export class UserService {
         return user
     }
 
-   
-
-    async login(user: any) {
-    }
-
     async getAllUsers() {
         const users = await this.UserRepository.findAll()
         return users
@@ -31,14 +26,5 @@ export class UserService {
     async findByEmail(email: string) {
         const users = await this.getAllUsers()
         return users.find(user => user.email === email )
-    }
-
-    async checkUser(dto: CreateUserDto) {
-        const user = await this.findByEmail(dto.email)
-        if (user) {
-            const isPasswordCorrect = descryptHash(dto.password, user.password)
-            return isPasswordCorrect ? this.login(user) : null
-        }
-        return null
     }
 }

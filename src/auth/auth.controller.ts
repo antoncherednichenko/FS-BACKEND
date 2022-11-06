@@ -13,6 +13,9 @@ export class AuthController {
 
     @Post('singup')
     async singup(@Body() dto: CreateUserDto) {
+        if (!this.AauthService.emailValidation(dto.email)) {
+            return new ServerError(1, 'Почта должна быть вида awesomepost@mail.com')
+        }
         await this.UserService.createUser(dto)
         return await this.login(dto)
     }
