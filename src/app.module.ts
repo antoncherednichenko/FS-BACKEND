@@ -10,7 +10,9 @@ import { UserService } from './user/user.service';
 import { AuthService } from './auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserController } from './user/user.controller';
+import { PagesModule } from './pages/pages.module';
 import * as dotenv from 'dotenv'
+import { Pages } from './pages/pages.model';
 dotenv.config()
 
 @Module({
@@ -26,11 +28,13 @@ dotenv.config()
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadModels: true,
-      models: [User],
+      models: [User, Pages],
+      synchronize: false,
     }),
+    SequelizeModule.forFeature([User, Pages]),
     AuthModule,
     UserModule,
-    SequelizeModule.forFeature([User]),
+    PagesModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService, AuthService, JwtService, UserService, ],

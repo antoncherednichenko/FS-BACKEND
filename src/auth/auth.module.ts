@@ -12,7 +12,6 @@ import { AuthController } from './auth.controller';
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const secret = process.env.JWT_SECRET
 @Module({
   imports: [
     UserModule, 
@@ -20,7 +19,7 @@ const secret = process.env.JWT_SECRET
     SequelizeModule.forFeature([User]),
     JwtModule.register({
       secret: `${process.env.JWT_SECRET}`,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '7d' },
     })
   ],
   providers: [

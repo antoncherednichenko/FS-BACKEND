@@ -21,6 +21,14 @@ export class AuthService {
         return false
     }
 
+    async isUnicUser(email: string): Promise<boolean> {
+        const user = await this.UserService.findByEmail(email)
+        if (user) {
+            return true
+        }
+        return false
+    }
+
     async userValidate(email: string, password: string) {
         const user = await this.UserService.findByEmail(email)
         if (user && descryptHash(password, user.password)) {
@@ -39,5 +47,13 @@ export class AuthService {
         const payload = { username: user.email, sub: user.id }
         const token = await this.JwtService.sign(payload)
         return token
+    }
+
+    async findUserByEmail(email: string) {
+        const user = await this.UserService.findByEmail(email)
+        if (user) {
+            return user
+        }
+        return null
     }
 }
