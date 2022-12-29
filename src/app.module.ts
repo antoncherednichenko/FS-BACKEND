@@ -13,6 +13,7 @@ import { UserController } from './user/user.controller';
 import { PagesModule } from './pages/pages.module';
 import * as dotenv from 'dotenv'
 import { Pages } from './pages/pages.model';
+import { LessonsModule } from './lessons/lessons.module';
 dotenv.config()
 
 @Module({
@@ -35,6 +36,7 @@ dotenv.config()
     AuthModule,
     UserModule,
     PagesModule,
+    LessonsModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService, AuthService, JwtService, UserService, ],
